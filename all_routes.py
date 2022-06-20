@@ -3,6 +3,7 @@ import sys
 
 sys.path.append(".")
 from objects.stack import Stack
+from objects.node import Node
 from objects.graph import Graph
 from objects.stack_obj import StackObj
 
@@ -41,7 +42,7 @@ class GetAllRoutes(Scene):
             {"name": "8", "position": [0, -2, 0], "color": ORANGE},
         ]
         side_list = [
-            [0, 4],
+            # [0, 4],
             [0, 2],
             [0, 1],
             [1, 4],
@@ -56,6 +57,7 @@ class GetAllRoutes(Scene):
             [6, 7],
         ]
         self.complex_scene(node_list, side_list)
+        self.wait(2)
         self.clear()
         self.restore()
         thanks = Text('谢谢观看！', font="Microsoft YaHei",
@@ -82,7 +84,7 @@ class GetAllRoutes(Scene):
         side_list = [[0, 1], [0, 2], [1, 3], [2, 3]]
         sides = [
             graph.add_side(
-                nodes[item[0]].get_arc_center()[0], nodes[item[1]].get_arc_center()[0]
+                nodes[item[0]], nodes[item[1]]
             )
             for item in side_list
         ]
@@ -212,6 +214,14 @@ class GetAllRoutes(Scene):
             self.play(Write(self.result))
         self.wait(2)
 
+    def draw_side(self, fr: Node, to: Node, graph: Graph, color):
+      all_sides = graph.get_sides().sides
+      for s in all_sides:
+        if s[0].get_text() == fr and s[1].get_text() == to:
+          s[2].set_color(color)
+          return
+      
+
     def complex_scene(self, node_list, side_list):
         self.play(FadeIn(self.author))
         graph = Graph()
@@ -223,7 +233,7 @@ class GetAllRoutes(Scene):
         ]
         sides = [
             graph.add_side(
-                nodes[item[0]].get_arc_center()[0], nodes[item[1]].get_arc_center()[0]
+                nodes[item[0]], nodes[item[1]]
             )
             for item in side_list
         ]
@@ -261,7 +271,11 @@ class GetAllRoutes(Scene):
                     or output.get_stack()[-1].get_text()
                     != forks.get_stack()[-1].get_text()
                 ):
-                    output.pop()
+                    transfer = output.pop()
+                    if output.get_length() > 0:
+                        to = transfer.get_text()
+                        fr = output.get_stack()[-1].get_text()
+                        self.draw_side(fr, to, graph, GREEN_C)
                     self.wait(1)
                 if forks.get_length():
                     forks.pop()
@@ -282,5 +296,8 @@ class GetAllRoutes(Scene):
                     continue
             if current.get_length():
                 transfer = current.pop()
-                output.push(transfer.get_text(), color=transfer.get_color())
+                fr = output.get_stack()[-1].get_text()
+                to = transfer.get_text()
+                output.push(to, color=transfer.get_color())
+                self.draw_side(fr, to, graph, RED_C)
                 self.wait(1)

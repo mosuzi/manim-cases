@@ -14,3 +14,5 @@ class Graph(VGroup):
 
     def add_side(self, *args, **kwargs):
         return self.sides.add_side(*args, **kwargs)
+    def get_sides(self):
+        return self.sides
