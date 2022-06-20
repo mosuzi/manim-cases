@@ -2,3 +2,4 @@ videos
 __pycache__
 utils
 *.wav
+util/generate_wavs.py
