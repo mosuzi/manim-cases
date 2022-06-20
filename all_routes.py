@@ -107,12 +107,12 @@ class GetAllRoutes(Scene):
         self.play(graph.animate.shift([-4, 0, 0]))
 
         # draw stacks
-        forks = Stack([0, -1, 0], "forks")
+        forks = Stack(self, [0, -1, 0], "forks")
         self.play(Write(forks))
-        output = Stack([2, -1, 0], "output")
+        output = Stack(self, [2, -1, 0], "output")
         self.wait(1)
         self.play(Write(output))
-        current = Stack([4, -1, 0], "current")
+        current = Stack(self, [4, -1, 0], "current")
         self.wait(1)
         self.play(Write(current))
         self.wait(1)
@@ -120,22 +120,22 @@ class GetAllRoutes(Scene):
         for side in sides:
             side.set_color(WHITE)
 
-        output.push(node_list[0]["name"], self)
+        output.push(node_list[0]["name"],)
         self.wait(0.5)
-        current.push(node_list[1]["name"], self)
-        current.push(node_list[2]["name"], self)
+        current.push(node_list[1]["name"])
+        current.push(node_list[2]["name"])
         self.wait(1)
-        forks.push(node_list[0]["name"], self)
+        forks.push(node_list[0]["name"])
         self.wait(1)
 
-        transfer = current.pop(self)
-        output.push(transfer.get_text(), self)
+        transfer = current.pop()
+        output.push(transfer.get_text())
         sides[1].set_color(RED_C)
         self.wait(1)
 
-        current.push(node_list[3]["name"], self)
-        transfer = current.pop(self)
-        output.push(transfer.get_text(), self)
+        current.push(node_list[3]["name"])
+        transfer = current.pop()
+        output.push(transfer.get_text())
         sides[3].set_color(RED_C)
         self.wait(1)
 
@@ -145,21 +145,21 @@ class GetAllRoutes(Scene):
         self.play(Write(result))
         self.wait(2)
 
-        output.pop(self)
+        output.pop()
         sides[3].set_color(GREEN_C)
-        output.pop(self)
+        output.pop()
         sides[1].set_color(GREEN_C)
-        forks.pop(self)
+        forks.pop()
         self.wait(1)
 
-        transfer: StackObj = current.pop(self)
-        output.push(transfer.get_text(), self)
+        transfer: StackObj = current.pop()
+        output.push(transfer.get_text())
         sides[0].set_color(RED_C)
         self.wait(1)
 
-        current.push(node_list[3]["name"], self)
-        transfer = current.pop(self)
-        output.push(transfer.get_text(), self)
+        current.push(node_list[3]["name"])
+        transfer = current.pop()
+        output.push(transfer.get_text())
         sides[2].set_color(RED_C)
         self.wait(1)
 
@@ -170,12 +170,12 @@ class GetAllRoutes(Scene):
         self.play(ReplacementTransform(result, new_result))
         self.wait(2)
 
-        output.pop(self)
+        output.pop()
         sides[2].set_color(GREEN_C)
-        output.pop(self)
+        output.pop()
         sides[0].set_color(GREEN_C)
         self.wait(0.5)
-        output.pop(self)
+        output.pop()
 
         self.wait(2)
 
@@ -235,17 +235,17 @@ class GetAllRoutes(Scene):
         self.play(graph.animate.shift([-4, 0, 0]))
 
         # draw stacks
-        forks = Stack([0, 0, 0], "forks")
+        forks = Stack(self, [0, 0, 0], "forks")
         self.play(Write(forks))
-        output = Stack([2, 0, 0], "output")
+        output = Stack(self, [2, 0, 0], "output")
         self.wait(1)
         self.play(Write(output))
-        current = Stack([4, 0, 0], "current")
+        current = Stack(self, [4, 0, 0], "current")
         self.wait(1)
         self.play(Write(current))
         self.wait(1)
 
-        output.push(node_list[0]["name"], self, color=node_list[0]["color"])
+        output.push(node_list[0]["name"], color=node_list[0]["color"])
 
         # auto run
         has_no_children = False
@@ -261,26 +261,26 @@ class GetAllRoutes(Scene):
                     or output.get_stack()[-1].get_text()
                     != forks.get_stack()[-1].get_text()
                 ):
-                    output.pop(self)
+                    output.pop()
                     self.wait(1)
                 if forks.get_length():
-                    forks.pop(self)
+                    forks.pop()
                     self.wait(1)
             else:
                 children = self.get_children(next_index, side_list, node_list)
                 if len(children):
                     for i in range(len(children)):
                         current.push(
-                            children[i]["name"], self, color=children[i]["color"]
+                            children[i]["name"], color=children[i]["color"]
                         )
                         self.wait(1)
                         if i:
-                            forks.push(next_str, self, color=next_obj.get_color())
+                            forks.push(next_str, color=next_obj.get_color())
                             self.wait(1)
                 else:
                     has_no_children = True
                     continue
             if current.get_length():
-                transfer = current.pop(self)
-                output.push(transfer.get_text(), self, color=transfer.get_color())
+                transfer = current.pop()
+                output.push(transfer.get_text(), color=transfer.get_color())
                 self.wait(1)

@@ -4,11 +4,12 @@ from objects.stack_obj import *
 
 
 class Stack(VGroup):
-    def __init__(self, position=ORIGIN, text="", **kwargs):
+    def __init__(self, scene: Scene,  position=ORIGIN, text="", **kwargs):
         self.position = position
         self.bottomLen = RIGHT * 0.7
         self.wallHeight = UP * 2
         self.objHeight = 0.3
+        self.scene = scene
         bottom_end = position + self.bottomLen
         left_side = Line(position, self.wallHeight + position)
         bottom = Line(position, self.bottomLen + position)
@@ -22,32 +23,32 @@ class Stack(VGroup):
         text.next_to(self.position + RIGHT * 0.35, BOTTOM * 0.1)
         return text
 
-    def update_text(self, text, scene: Scene):
+    def update_text(self, text):
         text = self.pin_text(text)
-        scene.play(ReplacementTransform(self.submobjects[-1], text))
+        self.scene.play(ReplacementTransform(self.submobjects[-1], text))
         self.remove(self.submobjects[-1])
         self.add(text)
         return text
 
-    def push(self, obj_name, scene: Scene, *vmobjects, **kwargs):
+    def push(self, obj_name, *vmobjects, **kwargs):
         content = StackObj(self.bottomLen[0], self.objHeight, obj_name, *vmobjects, **kwargs).shift(
             self.position + self.wallHeight - [.0, self.objHeight / 2, .0] + self.bottomLen / 2)
-        scene.play(FadeIn(content, run_time=0.4))
-        scene.wait(0.5)
-        scene.play(content.animate.shift(-self.wallHeight +
+        self.scene.play(FadeIn(content, run_time=0.4))
+        self.scene.wait(0.5)
+        self.scene.play(content.animate.shift(-self.wallHeight +
                    [.0, self.objHeight * (len(self.stack) + 1), .0]))
         self.stack.append(content)
 
-    def pop(self, scene: Scene):
+    def pop(self):
         content = self.stack.pop()
-        scene.play(content.animate.shift(self.wallHeight -
+        self.scene.play(content.animate.shift(self.wallHeight -
                    [.0, self.objHeight * (len(self.stack) + 1), .0]))
-        scene.play(FadeOut(content, run_time=0.4))
+        self.scene.play(FadeOut(content, run_time=0.4))
         return content
 
-    def do_shift(self, position, scene: Scene):
+    def do_shift(self, position):
         animates = [item.animate.shift(position) for item in self.stack]
-        scene.play(self.animate.shift(position), *animates)
+        self.scene.play(self.animate.shift(position), *animates)
 
     def get_length(self):
         return len(self.stack)

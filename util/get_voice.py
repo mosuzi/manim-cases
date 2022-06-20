@@ -1,8 +1,6 @@
 import http.client
 import urllib.parse
 import json
-
-
 def processGETRequest(appKey, token, text, audioSaveFile, format, sampleRate, voice, speechRate) :
     host = 'nls-gateway.cn-shanghai.aliyuncs.com'
     url = 'https://' + host + '/stream/v1/tts'
@@ -40,7 +38,7 @@ def processGETRequest(appKey, token, text, audioSaveFile, format, sampleRate, vo
     else :
         print('The GET request failed: ' + str(body))
     conn.close()
-def processPOSTRequest(appKey, token, text, audioSaveFile, format, sampleRate) :
+def processPOSTRequest(appKey, token, text, audioSaveFile, format, sampleRate) : 
     host = 'nls-gateway.cn-shanghai.aliyuncs.com'
     url = 'https://' + host + '/stream/v1/tts'
     httpHeaders = {
@@ -66,18 +64,17 @@ def processPOSTRequest(appKey, token, text, audioSaveFile, format, sampleRate) :
     else :
         print('The POST request failed: ' + str(body))
     conn.close()
-appKey = ''
-token = ''
-text = '今天是周一，天气挺好的。'
-# 采用RFC 3986规范进行urlencode编码。
-textUrlencode = text
-textUrlencode = urllib.parse.quote_plus(textUrlencode)
-textUrlencode = textUrlencode.replace("+", "%20")
-textUrlencode = textUrlencode.replace("*", "%2A")
-textUrlencode = textUrlencode.replace("%7E", "~")
-print('text: ' + textUrlencode)
-audioSaveFile = 'syAudio.wav'
-format = 'wav'
-sampleRate = 24000
-# GET请求方式
-processGETRequest(appKey, token, textUrlencode, audioSaveFile, format, sampleRate, 'stanley', 71)
+
+def generate(appKey, token, text, target):
+  # 采用RFC 3986规范进行urlencode编码。
+  textUrlencode = text
+  textUrlencode = urllib.parse.quote_plus(textUrlencode)
+  textUrlencode = textUrlencode.replace("+", "%20")
+  textUrlencode = textUrlencode.replace("*", "%2A")
+  textUrlencode = textUrlencode.replace("%7E", "~")
+  print('text: ' + textUrlencode)
+  audioSaveFile =  'audios/' + target + '.wav'
+  format = 'wav'
+  sampleRate = 24000
+  # GET请求方式
+  processGETRequest(appKey, token, textUrlencode, audioSaveFile, format, sampleRate, 'stanley', 71)
