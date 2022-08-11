@@ -1,0 +1,1 @@
+manimgl all_routes.py GetAllRoutes
